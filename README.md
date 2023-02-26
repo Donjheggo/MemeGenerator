@@ -1,1 +1,1 @@
-# A react practice using useState tracking state in a function component
+# A react practice using useState to track state in a function component
