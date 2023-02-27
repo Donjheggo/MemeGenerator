@@ -1,5 +1,5 @@
 # React useState
-A react practice using useState to track state in a function component
+A react practice using useState and useEffect hooks.
 
 
 ## Instruction
