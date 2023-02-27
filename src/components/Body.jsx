@@ -1,31 +1,39 @@
 import React from 'react'
-import memesData from '../memesData'
 
 const Body = () => {
 
-  const getRandomImage = () => {
-    const memes = memesData.data.memes
-    const random = Math.floor(Math.random() * memes.length)
-    return memes[random].url
-  }
-
-  const [memeUrl, setMemeUrl] = React.useState(getRandomImage())
-
-  const newMeme = () => {
-    setMemeUrl( getRandomImage() )
-  }
-
-
-  const [memeText, setMemeText] = React.useState({
+  const [meme, setMeme] = React.useState({
     topText: '',
     bottomText: '',
+    image: 'https://i.imgflip.com/gk5el.jpg '
   })
 
   const addText = (event) => {
-    const {name, value} = event.target 
-    setMemeText(prev => {
-      return {...prev, [name]: value}
-    })
+    const {name, value} = event.target
+    setMeme(prev => {
+      return {...prev, [name]: value }
+      }
+    )
+  }
+
+  const [memesData, setMemesData] = React.useState([])
+
+  React.useEffect( () => {
+    const getAPI = async() => {
+      const data = await fetch("https://api.imgflip.com/get_memes")
+      const response = await data.json()
+     setMemesData(response.data.memes)
+    }
+    getAPI()
+  }, [])
+
+
+  const getRandomImage = () => {
+    const randomNumber = Math.floor(Math.random() * memesData.length)
+    const randomImage = memesData[randomNumber].url
+    setMeme(prev => {
+      return {...prev, image: randomImage}
+    }) 
   }
 
 
@@ -36,12 +44,12 @@ const Body = () => {
           <input onChange={addText} name="bottomText" placeholder="Bottom Text" type="text" className='botttom-input' style={{padding: '10px',  marginLeft: '30px',  marginTop: '30px', width: '100%', marginRight: '30px',  borderRadius: '.5rem', border: 'solid 1px'}}/>
         </div>
         <div style={{display: 'flex'}}>
-        <button onClick={newMeme} style={{height: '40px', width: '100%', marginLeft: '30px', marginRight: '30px', marginTop: '20px',borderRadius: '.5rem', border: 'solid 1px', backgroundColor: 'purple', color: 'white'}}>Get a new image 🖼</button>
+        <button onClick={getRandomImage} style={{height: '40px', width: '100%', marginLeft: '30px', marginRight: '30px', marginTop: '20px',borderRadius: '.5rem', border: 'solid 1px', backgroundColor: 'purple', color: 'white'}}>Get a new image 🖼</button>
         </div>
       <div style={{position: 'relative'}}>
-          <img src={memeUrl} style={{maxWidth: '100%', marginLeft: 'auto', marginRight: 'auto', marginTop: '20px',borderRadius: '.5rem', display: 'flex'}} alt="memeImage" />
-          <p className='meme-text top'> {memeText.topText}</p>
-          <p className='meme-text bottom'> {memeText.bottomText}</p>
+          <img src={meme.image} style={{maxWidth: '100%', marginLeft: 'auto', marginRight: 'auto', marginTop: '20px',borderRadius: '.5rem', display: 'flex'}} alt="memeImage" />
+          <p className='meme-text top'> {meme.topText}</p>
+          <p className='meme-text bottom'> {meme.bottomText}</p>
       </div>
     </div>
   )
